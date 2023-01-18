@@ -1,17 +1,17 @@
 package com.keplux.employee_management.domain;
 
-import jakarta.persistence.CascadeType;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
-import java.util.List;
-import java.util.Set;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -19,36 +19,32 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "employee")
+@Table(name = "timeclock")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Employee {
-
+public class Timeclock {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Getter
     @Setter
     private Long id;
 
-    @Column(name = "first_name", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "time_in")
     @Getter
     @Setter
-    private String firstName;
+    private Date timeIn;
 
-    @Column(name = "last_name", nullable = false)
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "time_out")
     @Getter
     @Setter
-    private String lastName;
+    private Date timeOut;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "employee_details_id")
+    @ManyToOne
+    @JoinColumn(name="employee_id")
     @Getter
     @Setter
-    private EmployeeDetails employeeDetails;
-
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
-    @Getter
-    @Setter
-    private Set<Timeclock> timeclock;
+    private Employee employee;
 }
