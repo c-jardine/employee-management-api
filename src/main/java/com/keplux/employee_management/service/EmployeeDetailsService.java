@@ -4,13 +4,13 @@ import com.keplux.employee_management.domain.Employee;
 import com.keplux.employee_management.domain.EmployeeDetails;
 import com.keplux.employee_management.repository.EmployeeDetailsRepository;
 import com.keplux.employee_management.repository.EmployeeRepository;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class EmployeeDetailsService {
+
     @Autowired
     private EmployeeDetailsRepository repository;
     @Autowired
@@ -31,8 +31,7 @@ public class EmployeeDetailsService {
                 EmployeeDetails updatedDetails = updateDetails(oldEmployeeDetails, employeeDetails);
                 updatedDetails.setEmployee(employee);
                 repository.save(updatedDetails);
-            }
-            else {
+            } else {
                 employeeDetails.setEmployee(employee);
                 repository.save(employeeDetails);
                 employee.setEmployeeDetails(employeeDetails);

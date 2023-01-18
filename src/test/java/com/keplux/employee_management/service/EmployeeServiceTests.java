@@ -1,24 +1,28 @@
 package com.keplux.employee_management.service;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import com.keplux.employee_management.domain.Employee;
 import com.keplux.employee_management.repository.EmployeeRepository;
+import java.util.List;
+import java.util.Optional;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.util.List;
-import java.util.Optional;
-
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.*;
-
 @ExtendWith(MockitoExtension.class)
 public class EmployeeServiceTests {
+
     @Mock
     private EmployeeRepository repository;
     @InjectMocks
@@ -28,21 +32,72 @@ public class EmployeeServiceTests {
 
     @BeforeEach
     public void setup() {
-        employee = Employee.builder().id(1L).firstName("Test").lastName("User").build();
+        employee = Employee.builder()
+            .id(1L)
+            .firstName("Test")
+            .lastName("User")
+            .build();
     }
 
     @Test
-    public void givenEmployeeObject_whenSaveEmployee_thenReturnEmployeeObject() {
-        when(repository.save(any(Employee.class))).thenReturn(employee);
-        service.save(employee);
+    public void givenEmployee_whenSave_thenReturnEmployee() {
+        // Given
+        given(repository.save(any(Employee.class))).willReturn(employee);
+        // When
+        Employee savedEmployee = service.save(employee);
+        // Then
+        assertNotNull(savedEmployee);
         verify(repository, times(1)).save(any(Employee.class));
     }
 
     @Test
-    public void givenEmployeeObject_whenGetAllEmployees_thenReturnEmployeesList() {
-        when(repository.findAll()).thenReturn(List.of(employee));
-        // TODO: update with JUnit assertion
-        service.getAll();
+    public void givenEmployeeList_whenGetAll_thenReturnEmployees() {
+        // Given
+        Employee employee2 = Employee.builder()
+            .id(2L)
+            .firstName("Steve")
+            .lastName("Jobs")
+            .build();
+        given(repository.findAll()).willReturn(List.of(employee, employee2));
+        // When
+        List<Employee> savedEmployees = service.getAll();
+        // Then
+        assertEquals(2, savedEmployees.size());
         verify(repository, times(1)).findAll();
+    }
+
+    @Test
+    public void givenExistingEmployeeId_whenGetById_thenReturnEmployee() {
+        // Given
+        Long id = 1L;
+        given(repository.findById(id)).willReturn(Optional.of(employee));
+        // When
+        Employee savedEmployee = service.getById(id);
+        // Then
+        assertNotNull(savedEmployee);
+        assertEquals(employee.toString(), savedEmployee.toString());
+        verify(repository, times(1)).findById(id);
+    }
+
+    @Test
+    public void givenInvalidEmployeeId_whenGetById_thenThrowsException() {
+        Long invalidId = 2L;
+        // Given
+        given(repository.findById(invalidId)).willThrow(IllegalArgumentException.class);
+        // When
+        assertThrows(IllegalArgumentException.class, () -> service.getById(invalidId));
+        // Then
+        verify(repository, times(1)).findById(invalidId);
+    }
+
+    @Test
+    public void givenExistingEmployeeId_whenDeleteById_thenReturnEmployee() {
+        // Given
+        Long id = 1L;
+        willDoNothing().given(repository).deleteById(id);
+        // When
+        service.deleteById(id);
+        // Then
+        verify(repository, times(1)).deleteById(id);
     }
 }

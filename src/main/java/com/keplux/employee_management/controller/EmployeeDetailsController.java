@@ -12,11 +12,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class EmployeeDetailsController {
+
     @Autowired
     private EmployeeDetailsService service;
 
     @PostMapping("/employees/{employeeId}/details")
-    public ResponseEntity<EmployeeDetails> save(@PathVariable Long employeeId, @RequestBody EmployeeDetails employeeDetails) {
+    public ResponseEntity<EmployeeDetails> save(@PathVariable Long employeeId,
+        @RequestBody EmployeeDetails employeeDetails) {
         service.save(employeeId, employeeDetails);
         return ResponseEntity.status(HttpStatus.CREATED).body(employeeDetails);
     }
