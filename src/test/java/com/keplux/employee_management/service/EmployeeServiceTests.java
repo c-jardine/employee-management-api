@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.BDDMockito.willThrow;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
@@ -21,7 +22,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class EmployeeServiceTests {
+class EmployeeServiceTests {
 
     @Mock
     private EmployeeRepository repository;
@@ -31,7 +32,7 @@ public class EmployeeServiceTests {
     private Employee employee;
 
     @BeforeEach
-    public void setup() {
+    void setup() {
         employee = Employee.builder()
             .id(1L)
             .firstName("Test")
@@ -40,7 +41,7 @@ public class EmployeeServiceTests {
     }
 
     @Test
-    public void givenEmployee_whenSave_thenReturnEmployee() {
+    void givenEmployee_whenSave_thenReturnEmployee() {
         // Given
         given(repository.save(any(Employee.class))).willReturn(employee);
         // When
@@ -51,7 +52,7 @@ public class EmployeeServiceTests {
     }
 
     @Test
-    public void givenEmployeeList_whenGetAll_thenReturnEmployees() {
+    void givenEmployeeList_whenGetAll_thenReturnEmployees() {
         // Given
         Employee employee2 = Employee.builder()
             .id(2L)
@@ -67,7 +68,7 @@ public class EmployeeServiceTests {
     }
 
     @Test
-    public void givenExistingEmployeeId_whenGetById_thenReturnEmployee() {
+    void givenExistingEmployeeId_whenGetById_thenReturnEmployee() {
         // Given
         Long id = 1L;
         given(repository.findById(id)).willReturn(Optional.of(employee));
@@ -80,24 +81,40 @@ public class EmployeeServiceTests {
     }
 
     @Test
-    public void givenInvalidEmployeeId_whenGetById_thenThrowsException() {
+    void givenInvalidEmployeeId_whenGetById_thenThrowException() {
         Long invalidId = 2L;
         // Given
-        given(repository.findById(invalidId)).willThrow(IllegalArgumentException.class);
+        given(repository.findById(invalidId)).willThrow(
+            IllegalArgumentException.class);
         // When
-        assertThrows(IllegalArgumentException.class, () -> service.getById(invalidId));
+        assertThrows(IllegalArgumentException.class,
+            () -> service.getById(invalidId));
         // Then
         verify(repository, times(1)).findById(invalidId);
     }
 
     @Test
-    public void givenExistingEmployeeId_whenDeleteById_thenReturnEmployee() {
+    void givenExistingEmployeeId_whenDeleteById_thenReturnEmployee() {
         // Given
         Long id = 1L;
+        given(repository.findById(id)).willReturn(Optional.of(employee));
         willDoNothing().given(repository).deleteById(id);
         // When
         service.deleteById(id);
         // Then
         verify(repository, times(1)).deleteById(id);
+    }
+
+    @Test
+    void givenInvalidEmployeeId_whenDeleteById_thenThrowException() {
+        // Given
+        Long id = 2L;
+        given(repository.findById(id)).willThrow(
+            IllegalArgumentException.class);
+        //When
+        assertThrows(IllegalArgumentException.class,
+            () -> service.deleteById(id));
+        // Then
+        verify(repository, times(0)).deleteById(id);
     }
 }

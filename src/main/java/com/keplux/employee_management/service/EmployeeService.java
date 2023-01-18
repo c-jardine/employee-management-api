@@ -42,15 +42,22 @@ public class EmployeeService {
      */
     public Employee getById(Long id) {
         return repository.findById(id)
-            .orElseThrow(() -> new IllegalArgumentException("Employee not found with id:" + id));
+            .orElseThrow(() -> new IllegalArgumentException(
+                "Employee not found with id:" + id));
     }
 
     /**
      * Delete employee by id.
      *
      * @param id The id of the employee.
+     * @return The employee if found and deleted, otherwise throws
+     * IllegalArgumentException.
      */
-    public void deleteById(Long id) {
+    public Employee deleteById(Long id) {
+        Employee employee = repository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException(
+                "Employee not found with id:" + id));
         repository.deleteById(id);
+        return employee;
     }
 }
