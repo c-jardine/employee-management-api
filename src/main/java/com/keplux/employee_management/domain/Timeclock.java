@@ -1,5 +1,6 @@
 package com.keplux.employee_management.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -24,27 +25,31 @@ import lombok.Setter;
 @NoArgsConstructor
 @Builder
 public class Timeclock {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Getter
-    @Setter
-    private Long id;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "time_in")
-    @Getter
-    @Setter
-    private Date timeIn;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  @Getter
+  @Setter
+  private Long id;
 
-    @Temporal(TemporalType.TIMESTAMP)
-    @Column(name = "time_out")
-    @Getter
-    @Setter
-    private Date timeOut;
+  @Temporal(TemporalType.TIMESTAMP)
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+  @Column(name = "time_in", nullable = false)
+  @Getter
+  @Setter
+  private Date timeIn;
 
-    @ManyToOne
-    @JoinColumn(name="employee_id")
-    @Getter
-    @Setter
-    private Employee employee;
+  @Temporal(TemporalType.TIMESTAMP)
+  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+  @Column(name = "time_out")
+  @Getter
+  @Setter
+  private Date timeOut;
+
+  @ManyToOne
+  @JoinColumn(name = "employee_id")
+  @JsonIgnore
+  @Getter
+  @Setter
+  private Employee employee;
 }
