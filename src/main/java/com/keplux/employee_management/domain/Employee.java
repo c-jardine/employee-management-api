@@ -10,7 +10,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
-import java.util.List;
 import java.util.Set;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +17,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Entity representing an employee.
+ *
+ * @author Chris Jardine
+ * @version 0.0
+ */
 @Entity
 @Table(name = "employee")
 @AllArgsConstructor
@@ -41,13 +46,19 @@ public class Employee {
     @Setter
     private String lastName;
 
-    @OneToOne(cascade = CascadeType.ALL)
-    @JoinColumn(name = "employee_details_id")
+    @OneToOne(optional = false, cascade = CascadeType.ALL)
+    @JoinColumn(name = "employee_details_id", nullable = false)
     @Getter
     @Setter
     private EmployeeDetails employeeDetails;
 
-    @OneToMany(mappedBy = "employee", cascade = CascadeType.ALL)
+    @OneToOne
+    @JoinColumn(name = "current_shift", referencedColumnName = "id")
+    @Getter
+    @Setter
+    private Timeclock currentShift;
+
+    @OneToMany(mappedBy = "employee")
     @Getter
     @Setter
     private Set<Timeclock> timeclock;

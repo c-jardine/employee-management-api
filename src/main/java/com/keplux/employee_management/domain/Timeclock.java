@@ -19,6 +19,12 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+/**
+ * Entity representing a timeclock.
+ *
+ * @author Chris Jardine
+ * @version 0.0
+ */
 @Entity
 @Table(name = "timeclock")
 @AllArgsConstructor
@@ -26,30 +32,30 @@ import lombok.Setter;
 @Builder
 public class Timeclock {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Getter
-  @Setter
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Getter
+    @Setter
+    private Long id;
 
-  @Temporal(TemporalType.TIMESTAMP)
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-  @Column(name = "time_in", nullable = false)
-  @Getter
-  @Setter
-  private Date timeIn;
+    @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(name = "time_in", nullable = false)
+    @Getter
+    @Setter
+    private Date timeIn;
 
-  @Temporal(TemporalType.TIMESTAMP)
-  @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
-  @Column(name = "time_out")
-  @Getter
-  @Setter
-  private Date timeOut;
+    @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
+    @Column(name = "time_out")
+    @Getter
+    @Setter
+    private Date timeOut;
 
-  @ManyToOne
-  @JoinColumn(name = "employee_id")
-  @JsonIgnore
-  @Getter
-  @Setter
-  private Employee employee;
+    @ManyToOne
+    @JoinColumn(name = "employee_id")
+    @JsonIgnore
+    @Getter
+    @Setter
+    private Employee employee;
 }
