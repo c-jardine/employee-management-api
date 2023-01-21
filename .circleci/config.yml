@@ -5,6 +5,7 @@ orbs:
   # Orb commands and jobs help you with common scripting around a language/tool, so you don't have to copy and paste it everywhere.
   # See the orb documentation here: https://circleci.com/developer/orbs/orb/circleci/maven
   maven: circleci/maven@1.3
+  codecov: codecov/codecov@3.2.4
 
 executors:
   openjdk11:
@@ -32,3 +33,8 @@ workflows:
             - run:
                 name: Wait for db
                 command: dockerize -wait tcp://localhost:5432 -timeout 1m
+          post-steps:
+            - run:
+                name: Run tests and collect coverage
+                command: mvn -B test
+            - codecov/upload
