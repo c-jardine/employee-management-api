@@ -6,6 +6,7 @@ orbs:
   # See the orb documentation here: https://circleci.com/developer/orbs/orb/circleci/maven
   maven: circleci/maven@1.3
   codecov: codecov/codecov@3.2.4
+  jira: circleci/jira@1.3.1
 
 executors:
   openjdk11:
@@ -35,3 +36,4 @@ workflows:
                 command: dockerize -wait tcp://localhost:5432 -timeout 1m
           post-steps:
             - codecov/upload
+            - jira/notify
