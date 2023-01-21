@@ -33,8 +33,6 @@ workflows:
             - run:
                 name: Wait for db
                 command: dockerize -wait tcp://localhost:5432 -timeout 1m
-          post-steps:
             - run:
-                name: Run tests and collect coverage
-                command: mvn -B test
-            - codecov/upload
+                name: Upload coverage to CodeCov
+                command: curl -Os https://uploader.codecov.io/latest/linux/codecov chmod +x codecov ./codecov
