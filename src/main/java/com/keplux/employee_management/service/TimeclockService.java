@@ -26,6 +26,10 @@ public class TimeclockService {
     @Autowired
     private EmployeeService employeeService;
 
+    public Employee findEmployee(Long employeeId) {
+        return employeeService.getById(employeeId);
+    }
+
     /**
      * Clocks an employee in or out, depending on the status of their current
      * shift.
@@ -38,7 +42,7 @@ public class TimeclockService {
     @Transactional
     public Timeclock punchTime(Long employeeId, Date date) {
         // Find the employee with the given id or throw an exception.
-        Employee employee = employeeService.getById(employeeId);
+        Employee employee = findEmployee(employeeId);
         Timeclock timeclock;
         if (employee.getCurrentShift() != null) {
             // Clock out
