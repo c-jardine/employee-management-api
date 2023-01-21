@@ -7,8 +7,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class EmployeeManagementApplicationTests {
 
-    @Test
-    void contextLoads() {
-    }
-
+	@Test
+	void contextLoads() {
+	}
 }

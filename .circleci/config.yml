@@ -34,7 +34,4 @@ workflows:
                 name: Wait for db
                 command: dockerize -wait tcp://localhost:5432 -timeout 1m
           post-steps:
-            - run:
-                name: Run tests and collect coverage
-                command: mvn -B test
             - codecov/upload
