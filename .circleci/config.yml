@@ -33,6 +33,5 @@ workflows:
             - run:
                 name: Wait for db
                 command: dockerize -wait tcp://localhost:5432 -timeout 1m
-            - run:
-                name: Upload coverage to CodeCov
-                command: curl -Os https://uploader.codecov.io/latest/linux/codecov chmod +x codecov ./codecov
+          post-steps:
+            - codecov/upload
