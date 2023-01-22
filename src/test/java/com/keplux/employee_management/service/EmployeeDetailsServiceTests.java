@@ -2,9 +2,9 @@ package com.keplux.employee_management.service;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.keplux.employee_management.domain.Employee;
 import com.keplux.employee_management.domain.EmployeeDetails;
@@ -19,7 +19,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class EmployeeDetailsTests {
+class EmployeeDetailsServiceTests {
 
     @Mock
     private EmployeeDetailsRepository detailsRepository;
@@ -49,8 +49,8 @@ class EmployeeDetailsTests {
     }
 
     @Test
-    void givenEmployeeDetails_whenUpdate_thenReturnUpdatedEmployeeDetails() {
-        // Given
+    void whenEmployeeDetailsUpdated_thenReturnUpdatedEmployeeDetails() {
+        // Arrange
         String newEmail = "user@test.com";
         String newPhoneNumber = "1235550987";
         EmployeeDetails newDetails = EmployeeDetails.builder()
@@ -58,14 +58,14 @@ class EmployeeDetailsTests {
             .email(newEmail)
             .phoneNumber(newPhoneNumber)
             .build();
-        given(employeeRepository.findById(any(Long.class))).willReturn(
+        when(employeeRepository.findById(any(Long.class))).thenReturn(
             Optional.of(employee));
-        given(detailsRepository.save(any(EmployeeDetails.class))).willReturn(
+        when(detailsRepository.save(any(EmployeeDetails.class))).thenReturn(
             newDetails);
-        // When
+        // Act
         EmployeeDetails updatedDetails = detailsService.update(1L,
             newDetails);
-        // Then
+        // Assert
         assertTrue(updatedDetails.getEmail().contentEquals(newEmail));
         assertTrue(
             updatedDetails.getPhoneNumber().contentEquals(newPhoneNumber));

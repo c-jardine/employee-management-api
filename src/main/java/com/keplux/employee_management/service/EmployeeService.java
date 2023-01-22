@@ -24,9 +24,6 @@ public class EmployeeService {
     @Autowired
     private EmployeeRepository repository;
 
-    @Autowired
-    private ObjectMapper mapper;
-
     /**
      * Saves the employee.
      *
@@ -88,15 +85,25 @@ public class EmployeeService {
      */
     @Transactional
     public Employee updateById(Long id, Employee newData) {
-        try {
-            Employee employee = repository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(
-                    "Employee not found with id:" + id));
-            Employee updatedEmployee = mapper.updateValue(employee, newData);
-            repository.save(updatedEmployee);
-            return updatedEmployee;
-        } catch (JsonMappingException e) {
-            throw new IllegalArgumentException("Error updating employee.");
+        Employee employee = repository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException(
+                "Employee not found with id:" + id));
+        if (employee.getFirstName() != null) {
+            employee.setFirstName(employee.getFirstName());
         }
+        if (employee.getLastName() != null) {
+            employee.setLastName(employee.getLastName());
+        }
+        if (employee.getEmployeeDetails() != null) {
+            employee.setEmployeeDetails(employee.getEmployeeDetails());
+        }
+        if (employee.getCurrentShift() != null) {
+            employee.setCurrentShift(employee.getCurrentShift());
+        }
+        if (employee.getTimeclock() != null) {
+            employee.setTimeclock(employee.getTimeclock());
+        }
+        repository.save(employee);
+        return employee;
     }
 }

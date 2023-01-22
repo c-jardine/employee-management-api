@@ -6,8 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.willDoNothing;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import com.keplux.employee_management.domain.Employee;
 import com.keplux.employee_management.repository.EmployeeRepository;
@@ -40,75 +42,93 @@ class EmployeeServiceTests {
     }
 
     @Test
-    void givenEmployee_whenSave_thenReturnEmployee() {
-        // Given
-        given(repository.save(any(Employee.class))).willReturn(employee);
-        // When
+    void whenSaveEmployee_thenReturnEmployee() {
+        // Arrange
+        when(repository.save(any(Employee.class))).thenReturn(employee);
+        // Act
         Employee savedEmployee = service.save(employee);
-        // Then
+        // Assert
         assertNotNull(savedEmployee);
         verify(repository, times(1)).save(any(Employee.class));
     }
 
     @Test
-    void givenEmployeeList_whenGetAll_thenReturnEmployees() {
-        // Given
+    void whenGetAllEmployees_thenReturnListOfAllEmployees() {
+        // Arrange
         Employee employee2 = Employee.builder()
             .id(2L)
             .firstName("Steve")
             .lastName("Jobs")
             .build();
-        given(repository.findAll()).willReturn(List.of(employee, employee2));
-        // When
+        when(repository.findAll()).thenReturn(List.of(employee, employee2));
+        // Act
         List<Employee> savedEmployees = service.getAll();
-        // Then
+        // Assert
         assertEquals(2, savedEmployees.size());
         verify(repository, times(1)).findAll();
     }
 
     @Test
-    void givenExistingEmployeeId_whenGetById_thenReturnEmployee() {
-        // Given
+    void whenGetByIdWithValidId_thenReturnEmployee() {
+        // Arrange
         Long id = 1L;
-        given(repository.findById(id)).willReturn(Optional.of(employee));
-        // When
+        when(repository.findById(id)).thenReturn(Optional.of(employee));
+        // Act
         Employee savedEmployee = service.getById(id);
-        // Then
+        // Assert
         assertNotNull(savedEmployee);
         assertEquals(employee.toString(), savedEmployee.toString());
         verify(repository, times(1)).findById(id);
     }
 
     @Test
-    void givenInvalidEmployeeId_whenGetById_thenThrowException() {
+    void whenGetByIdWithInvalidId_thenThrowException() {
+        // Arrange
         Long invalidId = 2L;
-        // Given
-        given(repository.findById(invalidId)).willThrow(
+        when(repository.findById(invalidId)).thenThrow(
             IllegalArgumentException.class);
-        // When
+        // Act
         assertThrows(IllegalArgumentException.class,
             () -> service.getById(invalidId));
-        // Then
+        // Assert
         verify(repository, times(1)).findById(invalidId);
     }
 
     @Test
-    void givenExistingEmployeeId_whenDeleteById_thenReturnEmployee() {
-        // Given
+    void whenUpdateWithValidFields_thenReturnUpdatedEmployee() {
+        // Arrange
+        String updatedFirstName = "Updated";
+        when(repository.findById(any(Long.class))).thenReturn(
+            Optional.of(employee));
+        employee.setFirstName(updatedFirstName);
+        when(repository.save(any(Employee.class))).thenReturn(employee);
+        // Act
+        Long id = employee.getId();
+        Employee updatedEmployee = service.updateById(id, employee);
+        // Assert
+        assertEquals(updatedFirstName, updatedEmployee.getFirstName());
+        assertEquals(employee.getLastName(), updatedEmployee.getLastName());
+        verify(repository, times(1)).findById(id);
+        verify(repository, times(1)).save(employee);
+    }
+
+    @Test
+    void whenDeleteByIdWithValid_thenReturnDeletedEmployee() {
+        // Arrange
         Long id = 1L;
-        given(repository.findById(id)).willReturn(Optional.of(employee));
-        willDoNothing().given(repository).deleteById(id);
-        // When
+        when(repository.findById(id)).thenReturn(Optional.of(employee));
+        doNothing().when(repository).deleteById(id);
+        // Act
         service.deleteById(id);
-        // Then
+        // Assert
         verify(repository, times(1)).deleteById(id);
     }
 
     @Test
-    void givenInvalidEmployeeId_whenDeleteById_thenThrowException() {
+    void whenDeleteByIdWithInvalidId_thenThrowException() {
         // Given
         Long id = 2L;
-        given(repository.findById(id)).willThrow(
+        when(repository.findById(id)).thenThrow(
             IllegalArgumentException.class);
         //When
         assertThrows(IllegalArgumentException.class,
