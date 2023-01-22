@@ -4,6 +4,7 @@ import com.keplux.employee_management.domain.Employee;
 import com.keplux.employee_management.domain.EmployeeDetails;
 import com.keplux.employee_management.repository.EmployeeDetailsRepository;
 import com.keplux.employee_management.repository.EmployeeRepository;
+import java.util.List;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
